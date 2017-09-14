@@ -20,7 +20,7 @@ dependencies:
 
     override:
         # Force Gradle to pre-download dependencies for the app module (the default would only be for the root, which is useless)
-        - if [ -f ./gradlew ]; then ./gradlew app:dependencies --console=plain --no-daemon;else gradle app:dependencies --console=plain --no-daemon;fi
+        - if [ -f ./gradlew ]; then ./gradlew android-api-21:dependencies --console=plain --no-daemon;else gradle app:dependencies --console=plain --no-daemon;fi
 
 cache_directories:
     # Android SDK
