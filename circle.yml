@@ -3,7 +3,7 @@ machine:
         version: oraclejdk8
     environment:
         ANDROID_HOME: /usr/local/android-sdk-linux
-        ANDROID_BUILD_TOOLS: 25.0.2
+        ANDROID_BUILD_TOOLS: 26.0.0
         APPLICATION_ID: com.example
 
 dependencies:
@@ -12,15 +12,16 @@ dependencies:
         - if [ ! -e $ANDROID_HOME/tools/bin/sdkmanager ]; then echo y | android update sdk --no-ui --all --filter tools; fi
 
         # Pre-accept Android SDK components licenses
-        - mkdir "$ANDROID_HOME/licenses" || true
-        - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
+        #- mkdir "$ANDROID_HOME/licenses" || true
+        #- echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
+        - $ANDROID_HOME/tools/bin/sdkmanager --licenses
 
         # Install all the required SDK components
         - $ANDROID_HOME/tools/bin/sdkmanager --verbose "platform-tools" "build-tools;"$ANDROID_BUILD_TOOLS "extras;google;m2repository"
 
     override:
         # Force Gradle to pre-download dependencies for the app module (the default would only be for the root, which is useless)
-        - if [ -f ./gradlew ]; then ./gradlew android-api-21:dependencies --console=plain --no-daemon;else gradle app:dependencies --console=plain --no-daemon;fi
+        - if [ -f ./gradlew ]; then ./gradlew android-api-21:dependencies --console=plain --no-daemon;else gradle android-api-21:dependencies --console=plain --no-daemon;fi
 
 cache_directories:
     # Android SDK
