@@ -12,10 +12,8 @@ dependencies:
         - if [ ! -e $ANDROID_HOME/tools/bin/sdkmanager ]; then echo y | android update sdk --no-ui --all --filter tools; fi
 
         # Pre-accept Android SDK components licenses
-        #- mkdir "$ANDROID_HOME/licenses" || true
-        #- echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
-        - $ANDROID_HOME/tools/bin/sdkmanager --update
-        - $ANDROID_HOME/tools/bin/sdkmanager --licenses
+        - mkdir "$ANDROID_HOME/licenses" || true
+        - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
 
         # Install all the required SDK components
         - $ANDROID_HOME/tools/bin/sdkmanager --verbose "platform-tools" "build-tools;"$ANDROID_BUILD_TOOLS "extras;google;m2repository"
@@ -39,3 +37,13 @@ cache_directories:
 test:
   override:
     - ./gradlew testDebug
+
+  post:
+      # Collect the JUnit reports
+      - mkdir -p $CIRCLE_TEST_REPORTS/reports/junit
+      - find app/build/test-results/ -name "*.xml" -exec cp {} $CIRCLE_TEST_REPORTS/reports/junit/ \;
+
+      # Collect the Android Lint reports
+      - mkdir -p $CIRCLE_TEST_REPORTS/reports/lint
+      - find app/build/reports -name "lint*.html" -exec cp {} $CIRCLE_TEST_REPORTS/reports/lint/ \;
+      - find app/build/reports -name "lint*.xml" -exec cp {} $CIRCLE_TEST_REPORTS/reports/lint/ \;
