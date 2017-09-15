@@ -17,24 +17,26 @@ dependencies:
         - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
 
         # Install all the required SDK components
-        - $ANDROID_HOME/tools/bin/sdkmanager --verbose "platforms;"$ANDROID_PLATFORM "platform-tools" "build-tools;"$ANDROID_BUILD_TOOLS "extras;google;m2repository"
+        - $ANDROID_HOME/tools/bin/sdkmanager --verbose "platforms;"$ANDROID_PLATFORM "platform-tools" "build-tools;"$ANDROID_BUILD_TOOLS "extras;google;m2repository" "extras;google;google_play_services" "extras;android;m2repository"
 
     override:
         # Force Gradle to pre-download dependencies for the app module (the default would only be for the root, which is useless)
         - if [ -f ./gradlew ]; then ./gradlew android-api-21:dependencies --console=plain --no-daemon;else gradle android-api-21:dependencies --console=plain --no-daemon;fi
 
-cache_directories:
-    # Android SDK
-    - /usr/local/android-sdk-linux/tools
-    - /usr/local/android-sdk-linux/platforms
-    - /usr/local/android-sdk-linux/platform-tools
-    - /usr/local/android-sdk-linux/build-tools
-    - /usr/local/android-sdk-linux/licenses
-    - /usr/local/android-sdk-linux/extras/google/m2repository
+    cache_directories:
+        # Android SDK
+        - /usr/local/android-sdk-linux/tools
+        - /usr/local/android-sdk-linux/platforms
+        - /usr/local/android-sdk-linux/platform-tools
+        - /usr/local/android-sdk-linux/build-tools
+        - /usr/local/android-sdk-linux/licenses
+        - /usr/local/android-sdk-linux/extras/google/m2repository
+        - /usr/local/android-sdk-linux/extras/google/google_play_services
+        - /usr/local/android-sdk-linux/extras/android/m2repository
 
-    # Gradle caches
-    - /home/ubuntu/.gradle/caches/
-    - /home/ubuntu/.gradle/wrapper/
+        # Gradle caches
+        - /home/ubuntu/.gradle/caches/
+        - /home/ubuntu/.gradle/wrapper/
 
 test:
   override:
