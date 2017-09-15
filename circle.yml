@@ -1,6 +1,7 @@
 machine:
     java:
         version: oraclejdk8
+        
     environment:
         ANDROID_HOME: /usr/local/android-sdk-linux
         ANDROID_PLATFORM: android-26
@@ -21,7 +22,7 @@ dependencies:
 
     override:
         # Force Gradle to pre-download dependencies for the app module (the default would only be for the root, which is useless)
-        - if [ -f ./gradlew ]; then ./gradlew android-api-21:dependencies --console=plain --no-daemon;else gradle android-api-21:dependencies --console=plain --no-daemon;fi
+        - ./gradlew android-api-21:dependencies --console=plain --no-daemon
 
     cache_directories:
         # Android SDK
@@ -39,15 +40,15 @@ dependencies:
         - /home/ubuntu/.gradle/wrapper/
 
 test:
-  override:
-    - ./gradlew testDebug
+    override:
+        - ./gradlew testDebug
 
-  post:
-      # Collect the JUnit reports
-      - mkdir -p $CIRCLE_TEST_REPORTS/reports/junit
-      - find android-api-21/build/test-results/ -name "*.xml" -exec cp {} $CIRCLE_TEST_REPORTS/reports/junit/ \;
+    post:
+        # Collect the JUnit reports
+        - mkdir -p $CIRCLE_TEST_REPORTS/reports/junit
+        - find android-api-21/build/test-results/ -name "*.xml" -exec cp {} $CIRCLE_TEST_REPORTS/reports/junit/ \;
 
-      # Collect the Android Lint reports
-      - mkdir -p $CIRCLE_TEST_REPORTS/reports/lint
-      - find android-api-21/build/reports -name "lint*.html" -exec cp {} $CIRCLE_TEST_REPORTS/reports/lint/ \;
-      - find android-api-21/build/reports -name "lint*.xml" -exec cp {} $CIRCLE_TEST_REPORTS/reports/lint/ \;
+        # Collect the Android Lint reports
+        - mkdir -p $CIRCLE_TEST_REPORTS/reports/lint
+        - find android-api-21/build/reports -name "lint*.html" -exec cp {} $CIRCLE_TEST_REPORTS/reports/lint/ \;
+        - find android-api-21/build/reports -name "lint*.xml" -exec cp {} $CIRCLE_TEST_REPORTS/reports/lint/ \;
